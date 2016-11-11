@@ -381,7 +381,7 @@ describe('Job', function(){
   it('get job status', function() {
     this.timeout(12000);
 
-    var client = Promise.promisifyAll(redis.createClient());
+    var client = redis.createClient();
     return Job.create(queue, {foo: 'baz'}).then(function(job) {
       return job.isStuck().then(function(isStuck) {
         expect(isStuck).to.be(false);
