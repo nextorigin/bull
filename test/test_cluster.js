@@ -7,28 +7,27 @@ var path = require('path');
 var Queue = require('../');
 var expect = require('expect.js');
 var Promise = require('bluebird');
-var redis = require('redis');
+var redis = require('ioredis');
 
 var STD_QUEUE_NAME = 'cluster test queue';
 
 function buildQueue(name) {
   var qName = name || STD_QUEUE_NAME;
-  return new Queue(qName, 6379, '127.0.0.1');
+  return new Queue(qName, 6379, '127.0.0.1', {createClient: function(){ return new redis(); }});
 }
 
 function purgeQueue(queue) {
   // Since workers spawned only listen to the default queue,
   // we need to purge all keys after each test
-  var client = redis.createClient(6379, '127.0.0.1', {});
-  client = Promise.promisifyAll(client);
-  client.selectAsync(0);
+  var client = redis.createClient(6379, '127.0.0.1', {}, {createClient: function(){ return new redis(); }});
+  client.select(0);
 
   var script = [
     'local KS = redis.call("KEYS", ARGV[1])',
     'local result = redis.call("DEL", unpack(KS))',
     'return'].join('\n');
 
-  return queue.client.evalAsync(
+  return queue.client.eval(
     script,
     0,
     queue.toKey('*'));

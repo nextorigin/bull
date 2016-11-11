@@ -4,14 +4,12 @@
 var Queue = require('../');
 var expect = require('expect.js');
 var Promise = require('bluebird');
-var redis = require('redis');
+var redis = require('ioredis');
 var sinon = require('sinon');
 var _ = require('lodash');
 var uuid = require('node-uuid');
 var utils = require('./utils');
 
-Promise.promisifyAll(redis.RedisClient.prototype);
-Promise.promisifyAll(redis.Multi.prototype);
 
 /*
 console.error = function(){
@@ -32,7 +30,7 @@ describe('Queue', function () {
 
   beforeEach(function () {
     var client = redis.createClient();
-    return client.flushdbAsync();
+    return client.flushdb();
   });
 
   afterEach(function () {
@@ -222,7 +220,7 @@ describe('Queue', function () {
 
     beforeEach(function () {
       var client = redis.createClient();
-      return client.flushdbAsync().then(function () {
+      return client.flushdb().then(function () {
         return utils.newQueue();
       }).then(function (_queue) {
         queue = _queue;
@@ -345,7 +343,7 @@ describe('Queue', function () {
         expect(job).to.be.ok();
         expect(data).to.be.eql(37);
         expect(job.returnvalue).to.be.eql(37);
-        queue.client.hgetAsync(queue.toKey(job.jobId), 'returnvalue').then(function (retval) {
+        queue.client.hget(queue.toKey(job.jobId), 'returnvalue').then(function (retval) {
           expect(JSON.parse(retval)).to.be.eql(37);
           done();
         });
@@ -762,7 +760,7 @@ describe('Queue', function () {
   describe('.pause', function () {
     beforeEach(function () {
       var client = redis.createClient();
-      return client.flushdbAsync();
+      return client.flushdb();
     });
 
     it.skip('should pause a queue until resumed', function () {
@@ -936,7 +934,7 @@ describe('Queue', function () {
 
     beforeEach(function () {
       var client = redis.createClient();
-      return client.flushdbAsync();
+      return client.flushdb();
     });
 
     it('should process a delayed job only after delayed time', function (done) {
@@ -1097,7 +1095,7 @@ describe('Queue', function () {
     beforeEach(function () {
       var client = redis.createClient();
       queue = utils.buildQueue();
-      return client.flushdbAsync();
+      return client.flushdb();
     });
 
     afterEach(function () {
