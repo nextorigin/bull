@@ -34,7 +34,7 @@ function cleanupQueue(queue) {
 
 function cleanupQueues() {
   return Promise.map(queues, function(queue){
-    queue.on('error', function(err) {console.error(err);});
+    queue.on('error', function() {});
     return queue.close();
   }).then(function(){
     queues = [];
