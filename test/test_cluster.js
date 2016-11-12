@@ -44,7 +44,7 @@ function workerMessageHandlerWrapper(message) {
   }
 }
 
-describe('Cluster', function () {
+describe.only('Cluster', function () {
 
   var workers = [];
 
@@ -73,12 +73,16 @@ describe('Cluster', function () {
   });
 
   it('should process each job once', function(done) {
+    var numJobs = 21;
     var jobs = [];
     queue = buildQueue();
+    queue.on('failed', function(job){console.log('failed', job)})
+    queue.on('stalled', function(job){console.log('stalled', job)})
 
     workerMessageHandler = function(job) {
+      console.log('working job #', job.id)
       jobs.push(job.id);
-      if(jobs.length === 11) {
+      if(jobs.length === numJobs) {
         var counts = {};
         var j = 0;
         for(j; j < jobs.length; j++) {
@@ -90,7 +94,7 @@ describe('Cluster', function () {
     };
 
     var i = 0;
-    for(i; i < 11; i++) {
+    for(i; i < numJobs; i++) {
       queue.add({});
     }
   });
