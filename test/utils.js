@@ -2,7 +2,6 @@
 'use strict';
 
 var Queue = require('../');
-var Redis = require('ioredis');
 var Promise = require('bluebird');
 var STD_QUEUE_NAME = 'test queue';
 
@@ -15,7 +14,7 @@ function simulateDisconnect(queue){
 }
 
 function buildQueue(name) {
-  var queue = new Queue(name || STD_QUEUE_NAME, 6379, '127.0.0.1', {createClient: function(){ return new Redis(); }});
+  var queue = new Queue(name || STD_QUEUE_NAME, 6379, '127.0.0.1');
   queues.push(queue);
   return queue;
 }

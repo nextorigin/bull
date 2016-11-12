@@ -18,7 +18,7 @@ describe('Job', function(){
   });
 
   beforeEach(function(){
-    queue = new Queue('test-' + uuid(), 6379, '127.0.0.1', {createClient: function(){ return new redis(); }});
+    queue = new Queue('test-' + uuid(), 6379, '127.0.0.1');
   });
 
   afterEach(function(){

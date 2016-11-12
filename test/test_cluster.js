@@ -13,13 +13,13 @@ var STD_QUEUE_NAME = 'cluster test queue';
 
 function buildQueue(name) {
   var qName = name || STD_QUEUE_NAME;
-  return new Queue(qName, 6379, '127.0.0.1', {createClient: function(){ return new redis(); }});
+  return new Queue(qName, 6379, '127.0.0.1');
 }
 
 function purgeQueue(queue) {
   // Since workers spawned only listen to the default queue,
   // we need to purge all keys after each test
-  var client = redis.createClient(6379, '127.0.0.1', {}, {createClient: function(){ return new redis(); }});
+  var client = redis.createClient(6379, '127.0.0.1', {});
   client.select(0);
 
   var script = [
