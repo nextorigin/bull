@@ -96,7 +96,7 @@ describe('Job', function(){
       var token = uuid();
       return Job.create(queue, 1, {foo: 'bar'}).then(function(job) {
         return job.takeLock(token).then(function(lock) {
-          expect(lock).to.be(true);
+          expect(lock).to.have.property('redlock');
         }).then(function() {
           return job.remove(token);
         }).then(function() {
@@ -192,17 +192,17 @@ describe('Job', function(){
 
     it('can take a lock', function(){
       return job.takeLock('423').then(function(lockTaken){
-        expect(lockTaken).to.be(true);
+        expect(lockTaken).to.have.property('redlock');
       }).then(function(){
         return job.releaseLock('321').then(function(lockReleased){
-          expect(lockReleased).to.be(false);
+          expect(lockReleased).to.not.exist;
         });
       });
     });
 
     it('cannot take an already taken lock', function(){
       return job.takeLock('1234').then(function(lockTaken){
-        expect(lockTaken).to.be(true);
+        expect(lockTaken).to.have.property('redlock');
       }).then(function(){
         return job.takeLock('1234').then(function(lockTaken){
           expect(lockTaken).to.be(false);
@@ -212,20 +212,20 @@ describe('Job', function(){
 
     it('can renew a previously taken lock', function(){
       return job.takeLock('1235').then(function(lockTaken){
-        expect(lockTaken).to.be(true);
+        expect(lockTaken).to.have.property('redlock');
       }).then(function(){
         return job.renewLock('1235').then(function(lockRenewed){
-          expect(lockRenewed).to.be(true);
+          expect(lockRenewed).to.have.property('redlock');
         });
       });
     });
 
     it('can release a lock', function(){
       return job.takeLock('1237').then(function(lockTaken){
-        expect(lockTaken).to.be(true);
+        expect(lockTaken).to.have.property('redlock');
       }).then(function(){
         return job.releaseLock('321').then(function(lockReleased){
-          expect(lockReleased).to.be(false);
+          expect(lockReleased).to.not.exist;
         });
       }).then(function(){
         return job.releaseLock('1237').then(function(lockReleased){
