@@ -93,12 +93,11 @@ describe('Job', function(){
     });
 
     it('fails to remove a locked job', function() {
-      var token = uuid();
       return Job.create(queue, 1, {foo: 'bar'}).then(function(job) {
-        return job.takeLock(token).then(function(lock) {
+        return job.takeLock().then(function(lock) {
           expect(lock).to.have.property('redlock');
         }).then(function() {
-          return job.remove(token);
+          return job.remove();
         }).then(function() {
           throw new Error('Should not be able to remove a locked job');
         }).catch(function(err) {
@@ -191,45 +190,41 @@ describe('Job', function(){
     });
 
     it('can take a lock', function(){
-      return job.takeLock('423').then(function(lockTaken){
+      return job.takeLock().then(function(lockTaken){
         expect(lockTaken).to.have.property('redlock');
       }).then(function(){
-        return job.releaseLock('321').then(function(lockReleased){
+        return job.releaseLock().then(function(lockReleased){
           expect(lockReleased).to.not.exist;
         });
       });
     });
 
     it('cannot take an already taken lock', function(){
-      return job.takeLock('1234').then(function(lockTaken){
+      return job.takeLock().then(function(lockTaken){
         expect(lockTaken).to.have.property('redlock');
       }).then(function(){
-        return job.takeLock('1234').then(function(lockTaken){
+        return job.takeLock().then(function(lockTaken){
           expect(lockTaken).to.be(false);
         });
       });
     });
 
     it('can renew a previously taken lock', function(){
-      return job.takeLock('1235').then(function(lockTaken){
+      return job.takeLock().then(function(lockTaken){
         expect(lockTaken).to.have.property('redlock');
       }).then(function(){
-        return job.renewLock('1235').then(function(lockRenewed){
+        return job.renewLock().then(function(lockRenewed){
           expect(lockRenewed).to.have.property('redlock');
         });
       });
     });
 
     it('can release a lock', function(){
-      return job.takeLock('1237').then(function(lockTaken){
+      return job.takeLock().then(function(lockTaken){
         expect(lockTaken).to.have.property('redlock');
       }).then(function(){
-        return job.releaseLock('321').then(function(lockReleased){
+        return job.releaseLock().then(function(lockReleased){
           expect(lockReleased).to.not.exist;
-        });
-      }).then(function(){
-        return job.releaseLock('1237').then(function(lockReleased){
-          expect(lockReleased).to.be(true);
         });
       });
     });
