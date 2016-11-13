@@ -44,7 +44,7 @@ function workerMessageHandlerWrapper(message) {
   }
 }
 
-describe.only('Cluster', function () {
+describe('Cluster', function () {
 
   var workers = [];
 
