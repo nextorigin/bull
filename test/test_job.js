@@ -7,6 +7,7 @@ var expect = require('expect.js');
 var redis = require('ioredis');
 var Promise = require('bluebird');
 var uuid = require('node-uuid');
+var Redlock = require('redlock');
 
 
 describe('Job', function(){
@@ -95,7 +96,7 @@ describe('Job', function(){
     it('fails to remove a locked job', function() {
       return Job.create(queue, 1, {foo: 'bar'}).then(function(job) {
         return job.takeLock().then(function(lock) {
-          expect(lock).to.have.property('redlock');
+          expect(lock).to.be.a(Redlock.Lock);
         }).then(function() {
           return job.remove();
         }).then(function() {
@@ -191,7 +192,7 @@ describe('Job', function(){
 
     it('can take a lock', function(){
       return job.takeLock().then(function(lockTaken){
-        expect(lockTaken).to.have.property('redlock');
+        expect(lockTaken).to.be.a(Redlock.Lock);
       }).then(function(){
         return job.releaseLock().then(function(lockReleased){
           expect(lockReleased).to.not.exist;
@@ -201,7 +202,7 @@ describe('Job', function(){
 
     it('cannot take an already taken lock', function(){
       return job.takeLock().then(function(lockTaken){
-        expect(lockTaken).to.have.property('redlock');
+        expect(lockTaken).to.be.a(Redlock.Lock);
       }).then(function(){
         return job.takeLock().then(function(lockTaken){
           expect(lockTaken).to.be(false);
@@ -211,17 +212,17 @@ describe('Job', function(){
 
     it('can renew a previously taken lock', function(){
       return job.takeLock().then(function(lockTaken){
-        expect(lockTaken).to.have.property('redlock');
+        expect(lockTaken).to.be.a(Redlock.Lock);
       }).then(function(){
         return job.renewLock().then(function(lockRenewed){
-          expect(lockRenewed).to.have.property('redlock');
+          expect(lockRenewed).to.be.a(Redlock.Lock);
         });
       });
     });
 
     it('can release a lock', function(){
       return job.takeLock().then(function(lockTaken){
-        expect(lockTaken).to.have.property('redlock');
+        expect(lockTaken).to.be.a(Redlock.Lock);
       }).then(function(){
         return job.releaseLock().then(function(lockReleased){
           expect(lockReleased).to.not.exist;
