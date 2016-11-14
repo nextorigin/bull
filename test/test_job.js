@@ -10,7 +10,7 @@ var uuid = require('node-uuid');
 var Redlock = require('redlock');
 
 
-describe('Job', function(){
+describe.only('Job', function(){
   var queue;
 
   beforeEach(function(){
