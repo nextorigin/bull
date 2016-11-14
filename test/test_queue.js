@@ -86,6 +86,7 @@ describe('Queue', function () {
     });
 
     it('should close if the job expires after the LOCK_RENEW_TIME', function (done) {
+      this.timeout(testQueue.STALLED_JOB_CHECK_INTERVAL * 2);
       testQueue.LOCK_RENEW_TIME = 10;
       testQueue.process(function () {
         return Promise.delay(40);
@@ -228,6 +229,7 @@ describe('Queue', function () {
     });
 
     afterEach(function () {
+      this.timeout(queue.STALLED_JOB_CHECK_INTERVAL * (1 + queue.MAX_STALLED_JOB_COUNT));
       return utils.cleanupQueues();
     });
 
@@ -1104,6 +1106,7 @@ describe('Queue', function () {
     });
 
     afterEach(function () {
+      this.timeout(queue.STALLED_JOB_CHECK_INTERVAL * (1 + queue.MAX_STALLED_JOB_COUNT));
       return queue.close();
     });
 
@@ -1209,6 +1212,7 @@ describe('Queue', function () {
     var queue;
 
     afterEach(function () {
+      this.timeout(queue.STALLED_JOB_CHECK_INTERVAL * (1 + queue.MAX_STALLED_JOB_COUNT));
       return queue.close();
     });
 
@@ -1445,6 +1449,7 @@ describe('Queue', function () {
     });
 
     afterEach(function () {
+      this.timeout(queue.STALLED_JOB_CHECK_INTERVAL * (1 + queue.MAX_STALLED_JOB_COUNT));
       return queue.close();
     });
 
@@ -1562,6 +1567,7 @@ describe('Queue', function () {
     });
 
     afterEach(function () {
+      this.timeout(queue.STALLED_JOB_CHECK_INTERVAL * (1 + queue.MAX_STALLED_JOB_COUNT));
       return queue.close();
     });
 
@@ -1673,6 +1679,7 @@ describe('Queue', function () {
     });
 
     afterEach(function () {
+      this.timeout(queue.STALLED_JOB_CHECK_INTERVAL * (1 + queue.MAX_STALLED_JOB_COUNT));
       return queue.close();
     });
 
