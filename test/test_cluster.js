@@ -55,7 +55,6 @@ describe('Cluster', function () {
       worker = cluster.fork();
       worker.on('message', workerMessageHandlerWrapper);
       workers.push(worker);
-      console.log('Worker spawned: #', worker.id);
     }
   });
 
@@ -76,14 +75,11 @@ describe('Cluster', function () {
     var numJobs = 21;
     var jobs = [];
     queue = buildQueue();
-    queue.on('failed', function(job){console.log('failed', job)})
     queue.on('stalled', function(job){
-      console.log('stalled', job);
       jobs.splice(jobs.indexOf(job.jobId), 1);
     });
 
     workerMessageHandler = function(job) {
-      console.log('working job #', job.id)
       jobs.push(job.id);
       if(jobs.length === numJobs) {
         var counts = {};
