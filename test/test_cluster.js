@@ -6,7 +6,6 @@ var os = require('os');
 var path = require('path');
 var Queue = require('../');
 var expect = require('expect.js');
-var Promise = require('bluebird');
 var redis = require('ioredis');
 
 var STD_QUEUE_NAME = 'cluster test queue';
