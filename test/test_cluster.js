@@ -77,7 +77,10 @@ describe('Cluster', function () {
     var jobs = [];
     queue = buildQueue();
     queue.on('failed', function(job){console.log('failed', job)})
-    queue.on('stalled', function(job){console.log('stalled', job)})
+    queue.on('stalled', function(job){
+      console.log('stalled', job);
+      jobs.splice(jobs.indexOf(job.jobId), 1);
+    });
 
     workerMessageHandler = function(job) {
       console.log('working job #', job.id)
