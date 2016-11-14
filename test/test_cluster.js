@@ -72,7 +72,7 @@ describe('Cluster', function () {
     }
   });
 
-  it.only('should process each job once', function(done) {
+  it('should process each job once', function(done) {
     var numJobs = 21;
     var jobs = [];
     queue = buildQueue();
